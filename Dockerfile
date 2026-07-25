@@ -13,12 +13,11 @@ WORKDIR /server
 # Install build dependencies
 RUN apk add --no-cache gcc musl-dev
 
-COPY server/go.mod server/go.sum* ./
-RUN go mod download
-
+COPY server/go.mod ./
 COPY server/ ./
 COPY --from=client-builder /client/dist ./internal/router/web/dist/
 
+RUN go mod tidy
 RUN CGO_ENABLED=1 go build -o /qanvidnas .
 
 # Stage 3: Final image

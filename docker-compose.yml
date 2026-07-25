@@ -8,10 +8,21 @@ services:
     ports:
       - "3000:3000"
     volumes:
+      # 配置和数据持久化在当前目录，删容器不丢数据
       - ./config.yaml:/app/config.yaml:ro
       - ./data:/app/data
-      - /volumes/media:/media:ro          # 修改为你的 NAS 媒体文件夹路径
-      # 如果需要上传功能，将上传目录挂载为可写
-      # - /volumes/upload:/upload
+
+      # 把 NAS 上所有你想访问的目录挂载进来（按你的实际路径改）
+      # 挂载后在 Web 端设置 → 扫描文件夹 → 输入容器内路径（如 /media/video）
+      - /vol1:/vol1:ro
+      # 飞牛 NAS 常见路径示例，选一个即可：
+      # - /volumes:/volumes:ro
+      # - /volume1:/volume1:ro
+      # - /mnt:/mnt:ro
+
+      # 上传目录（需要可写权限）
+      # 可以把上传目录指向你的媒体文件夹，或单独指定
+      # - /vol1/upload:/vol1/upload
+
     environment:
       - TZ=Asia/Shanghai

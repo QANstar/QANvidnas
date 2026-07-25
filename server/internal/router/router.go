@@ -36,7 +36,7 @@ func Setup(db *sql.DB, cfg *config.Config) *gin.Engine {
 	mediaHandler := handlers.NewMediaHandler(db, scan, cfg)
 	searchHandler := handlers.NewSearchHandler(db)
 	playlistHandler := handlers.NewPlaylistHandler(db)
-	streamHandler := handlers.NewStreamHandler(db)
+	streamHandler := handlers.NewStreamHandler(db, cfg.DataDir)
 	uploadHandler := handlers.NewUploadHandler(db)
 
 	// Start file watcher

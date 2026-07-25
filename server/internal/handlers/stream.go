@@ -14,11 +14,12 @@ import (
 )
 
 type StreamHandler struct {
-	db *sql.DB
+	db      *sql.DB
+	dataDir string
 }
 
-func NewStreamHandler(db *sql.DB) *StreamHandler {
-	return &StreamHandler{db: db}
+func NewStreamHandler(db *sql.DB, dataDir string) *StreamHandler {
+	return &StreamHandler{db: db, dataDir: dataDir}
 }
 
 func (h *StreamHandler) StreamVideo(c *gin.Context) {
@@ -164,6 +165,11 @@ func (h *StreamHandler) ServeCover(c *gin.Context) {
 		filePath = spritePath
 	} else if coverPath != "" {
 		filePath = coverPath
+	}
+
+	// Resolve relative paths (cover/sprite are stored relative to dataDir)
+	if filePath != "" && !filepath.IsAbs(filePath) && !strings.Contains(filePath, "/media") {
+		filePath = filepath.Join(h.dataDir, filePath)
 	}
 
 	if filePath == "" || !strings.Contains(filePath, "/") {
