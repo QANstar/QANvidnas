@@ -1,0 +1,26 @@
+# Config
+config.yaml
+
+# Go
+server/qanvidnas
+server/internal/router/web/dist/
+
+# Node
+node_modules/
+client/dist/
+client/android/app/build/
+client/android/.gradle/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data
+data/
+*.db

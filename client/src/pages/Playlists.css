@@ -1,0 +1,57 @@
+.playlists-page { max-width: 800px; margin: 0 auto; }
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-lg);
+}
+
+.page-header h2 { font-size: var(--font-size-xl); }
+
+.create-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
+  padding: var(--space-md);
+  background: var(--bg-card);
+  border-radius: var(--border-radius);
+}
+
+.playlist-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.playlist-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-md);
+  background: var(--bg-card);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+  transition: border-color var(--transition-fast);
+}
+
+.playlist-card:hover { border-color: var(--blue); }
+
+.pl-info h3 { font-size: var(--font-size-base); margin-bottom: 4px; }
+
+.pl-path {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-family: monospace;
+}
+
+.pl-mode {
+  font-size: 0.7rem;
+  background: rgba(108, 92, 231, 0.2);
+  color: var(--blue-light);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.pl-actions { display: flex; gap: var(--space-sm); }

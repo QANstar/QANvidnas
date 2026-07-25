@@ -1,0 +1,54 @@
+.settings-page { max-width: 800px; margin: 0 auto; }
+
+.settings-page h2 { margin-bottom: var(--space-xl); }
+
+.settings-section {
+  background: var(--bg-card);
+  border-radius: var(--border-radius);
+  padding: var(--space-lg);
+  margin-bottom: var(--space-lg);
+}
+
+.settings-section h3 { margin-bottom: var(--space-md); font-size: var(--font-size-lg); }
+
+.add-row {
+  display: flex;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+  align-items: center;
+}
+
+.add-row .auth-input { flex: 1; min-width: 0; }
+
+.setting-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-sm) 0;
+  border-bottom: 1px solid var(--border-color);
+  font-size: var(--font-size-sm);
+}
+
+.setting-path { font-family: monospace; color: var(--text-secondary); }
+.setting-status { color: var(--text-muted); font-size: 0.75rem; }
+
+.invite-code {
+  font-family: monospace;
+  background: var(--bg-secondary);
+  padding: 2px 8px;
+  border-radius: 4px;
+  color: var(--blue-light);
+}
+
+.code-desc {
+  margin-left: var(--space-sm);
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+}
+
+.code-usage { color: var(--text-muted); font-size: 0.8rem; }
+
+@media (max-width: 767px) {
+  .add-row { flex-direction: column; }
+  .setting-item { flex-direction: column; align-items: flex-start; gap: 4px; }
+}

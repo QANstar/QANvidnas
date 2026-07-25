@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+  qanvidnas:
+    image: qanvidnas:latest
+    container_name: qanvidnas
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./config.yaml:/app/config.yaml:ro
+      - ./data:/app/data
+      - /volumes/media:/media:ro          # 修改为你的 NAS 媒体文件夹路径
+      # 如果需要上传功能，将上传目录挂载为可写
+      # - /volumes/upload:/upload
+    environment:
+      - TZ=Asia/Shanghai

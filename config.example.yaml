@@ -1,0 +1,22 @@
+# QANvidnas 配置文件
+# 复制此文件为 config.yaml 并修改对应配置项
+# config.yaml 不会被提交到 Git
+
+server:
+  host: "0.0.0.0"   # 监听地址，0.0.0.0 表示接受所有网络接口
+  port: "3000"        # 监听端口
+
+data_dir: "./data"    # 数据存储目录（数据库、封面、缩略图）
+
+# 注册码配置
+# 用户注册必须提供有效注册码
+invite_codes:
+  - code: "CHANGE-ME"
+    description: "默认注册码，请修改"
+    max_uses: 5        # 最大使用次数，0 表示无限
+    expires_at: ""      # 过期日期 YYYY-MM-DD，留空表示永不过期
+
+# 初始扫描文件夹（也可在管理界面中动态添加）
+# scan_folders:
+#   - path: "/media/videos"
+#   - path: "/media/music"
