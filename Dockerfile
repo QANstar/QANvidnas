@@ -33,7 +33,7 @@ COPY --from=server-builder /qanvidnas .
 # Create data directory
 RUN mkdir -p /app/data
 
-EXPOSE 3000
+EXPOSE 6666
 
 ENV TZ=Asia/Shanghai
 

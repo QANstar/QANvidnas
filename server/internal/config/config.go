@@ -33,7 +33,7 @@ func Default() *Config {
 	return &Config{
 		Server: ServerConfig{
 			Host: "0.0.0.0",
-			Port: "3000",
+			Port: "6666",
 		},
 		DataDir: "./data",
 	}
@@ -55,7 +55,7 @@ func Load(path string) (*Config, error) {
 		cfg.Server.Host = "0.0.0.0"
 	}
 	if cfg.Server.Port == "" {
-		cfg.Server.Port = "3000"
+		cfg.Server.Port = "6666"
 	}
 	if cfg.DataDir == "" {
 		cfg.DataDir = "./data"

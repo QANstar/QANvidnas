@@ -6,7 +6,7 @@ services:
     container_name: qanvidnas
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "6666:6666"
     volumes:
       # 配置和数据持久化在当前目录，删容器不丢数据
       - ./config.yaml:/app/config.yaml:ro
