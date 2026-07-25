@@ -1,3 +1,6 @@
+# 复制此文件为 docker-compose.yml 并修改媒体路径
+# docker-compose.yml 不会被提交到 Git
+
 services:
   qanvidnas:
     build: .
@@ -8,6 +11,6 @@ services:
     volumes:
       - ./config.yaml:/app/config.yaml:ro
       - ./data:/app/data
-      - /vol1:/vol1:ro
+      - /your/nas/media/path:/media    # ← 改成你的 NAS 媒体文件夹路径
     environment:
       - TZ=Asia/Shanghai
