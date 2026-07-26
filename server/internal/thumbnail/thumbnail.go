@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"image"
 	"image/jpeg"
 	"log"
 	"math"
