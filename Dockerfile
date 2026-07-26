@@ -2,7 +2,7 @@
 FROM node:22-alpine AS client-builder
 WORKDIR /client
 COPY client/package*.json ./
-RUN npm ci
+RUN npm config set registry https://registry.npmmirror.com && npm ci
 COPY client/ ./
 RUN npm run build
 
@@ -12,6 +12,8 @@ WORKDIR /server
 
 # Install build dependencies
 RUN apk add --no-cache gcc musl-dev
+
+ENV GOPROXY=https://goproxy.cn,direct
 
 COPY server/go.mod ./
 COPY server/ ./
