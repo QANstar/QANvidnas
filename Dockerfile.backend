@@ -9,8 +9,9 @@ FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
 WORKDIR /app
 COPY --from=build /app/publish .
 
-# Install ffmpeg for media processing
-RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg && \
+# Install ffmpeg for media processing (use China mirror for speed)
+RUN sed -i 's|deb.debian.org|mirrors.aliyun.com|g' /etc/apt/sources.list.d/debian.sources && \
+    apt-get update && apt-get install -y --no-install-recommends ffmpeg && \
     rm -rf /var/lib/apt/lists/*
 
 EXPOSE 6666
