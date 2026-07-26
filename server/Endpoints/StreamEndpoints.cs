@@ -18,8 +18,9 @@ public static class StreamEndpoints
             ServeStream(id, "audio", db, http));
 
         // GET /api/stream/cover/{id}
-        group.MapGet("/cover/{id:long}", async (long id, AppDbContext db, IConfiguration config, HttpContext http) =>
+        group.MapGet("/cover/{id:long}", async (long id, AppDbContext db, IConfiguration config, HttpContext http, ILoggerFactory loggerFactory) =>
         {
+            var logger = loggerFactory.CreateLogger("StreamCover");
             var type = http.Request.Query["type"].FirstOrDefault() ?? "cover";
 
             var media = await db.Media.FirstOrDefaultAsync(m => m.Id == id && !m.Deleted);
@@ -32,19 +33,34 @@ public static class StreamEndpoints
             else if (!string.IsNullOrEmpty(media.CoverPath))
                 filePath = media.CoverPath;
 
-            // Resolve relative paths
-            if (filePath != null && !Path.IsPathRooted(filePath) && !filePath.Contains("/media"))
+            // Resolve relative paths to absolute
+            if (filePath != null && !Path.IsPathRooted(filePath))
             {
                 var dataDir = config.GetValue<string>("Storage:DataDir") ?? "data";
-                filePath = Path.Combine(dataDir, filePath);
+                filePath = Path.GetFullPath(Path.Combine(dataDir, filePath));
             }
 
-            if (filePath == null || !File.Exists(filePath))
+            logger.LogInformation("Cover request id={MediaId} type={Type} storedPath={StoredPath} resolvedPath={ResolvedPath} exists={Exists}",
+                id, type, media.CoverPath, filePath, filePath != null && File.Exists(filePath));
+
+            if (filePath == null || !System.IO.File.Exists(filePath))
+                return Placeholder(http, media);
+
+            // Validate the file is non-empty (ffmpeg may leave 0-byte files on failure)
+            try
             {
-                http.Response.ContentType = "image/svg+xml";
-                return Results.Content(
-                    media.Type == "audio" ? AudioPlaceholderSVG : VideoPlaceholderSVG,
-                    "image/svg+xml");
+                var fileInfo = new System.IO.FileInfo(filePath);
+                if (fileInfo.Length == 0)
+                {
+                    System.IO.File.Delete(filePath);
+                    logger.LogWarning("Cover id={MediaId}: deleted 0-byte file at {Path}", id, filePath);
+                    return Placeholder(http, media);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Cover id={MediaId}: error checking file {Path}", id, filePath);
+                return Placeholder(http, media);
             }
 
             var ext = Path.GetExtension(filePath).ToLowerInvariant();
@@ -55,8 +71,17 @@ public static class StreamEndpoints
                 _ => "image/jpeg"
             };
 
-            http.Response.Headers.CacheControl = "public, max-age=86400";
-            return Results.File(filePath, contentType);
+            try
+            {
+                http.Response.Headers.CacheControl = "public, max-age=86400";
+                var bytes = await System.IO.File.ReadAllBytesAsync(filePath);
+                return Results.Bytes(bytes, contentType);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Cover id={MediaId}: failed to read file {Path}", id, filePath);
+                return Placeholder(http, media);
+            }
         });
     }
 
@@ -127,6 +152,14 @@ public static class StreamEndpoints
         fileStream.Seek(start, SeekOrigin.Begin);
 
         return Results.Stream(fileStream, contentType);
+    }
+
+    private static IResult Placeholder(HttpContext http, Models.Media media)
+    {
+        http.Response.ContentType = "image/svg+xml";
+        return Results.Content(
+            media.Type == "audio" ? AudioPlaceholderSVG : VideoPlaceholderSVG,
+            "image/svg+xml");
     }
 
     private const string VideoPlaceholderSVG = @"<svg xmlns=""http://www.w3.org/2000/svg"" width=""480"" height=""270"" viewBox=""0 0 480 270"">

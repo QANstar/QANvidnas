@@ -138,7 +138,33 @@ public class ThumbnailService
                 }
             };
             process.Start();
-            await process.WaitForExitAsync();
+
+            // Timeout after 30 seconds — long videos can hang on seek
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+            try
+            {
+                await process.WaitForExitAsync(cts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                try { process.Kill(entireProcessTree: true); } catch { }
+                try { if (File.Exists(output)) File.Delete(output); } catch { }
+                return false;
+            }
+
+            // Clean up 0-byte files from failed extraction
+            if (process.ExitCode != 0 && File.Exists(output))
+            {
+                try
+                {
+                    var info = new FileInfo(output);
+                    if (info.Length == 0)
+                        File.Delete(output);
+                }
+                catch { }
+                return false;
+            }
+
             return File.Exists(output);
         }
         catch
