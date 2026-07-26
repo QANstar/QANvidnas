@@ -17,7 +17,7 @@ export default function Login() {
     if (token) { navigate('/'); return; }
     authAPI.checkSetup()
       .then((res) => {
-        if (res.data.setup_required) setNeedsSetup(true);
+        if (res.data.setupRequired) setNeedsSetup(true);
       })
       .catch(() => {});
   }, [token, navigate]);
