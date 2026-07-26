@@ -168,6 +168,9 @@ public static class MediaEndpoints
         // POST /api/media/scan
         protectedGroup.MapPost("/scan", (ScannerService scanner) =>
         {
+            if (!scanner.TryStartScan())
+                return Results.Ok(new { message = "扫描已在运行中", status = "scanning" });
+
             _ = scanner.FullScanAsync();
             return Results.Ok(new { message = "扫描已启动", status = "scanning" });
         });
@@ -204,6 +207,9 @@ public static class MediaEndpoints
                 db.ScanFolders.Add(new ScanFolder { Path = req.Path });
                 await db.SaveChangesAsync();
             }
+
+            if (!scanner.TryStartScan())
+                return Results.Ok(new { message = "添加成功，扫描已在运行中" });
 
             _ = scanner.FullScanAsync();
             return Results.Ok(new { message = "添加成功，扫描已启动" });

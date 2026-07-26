@@ -9,6 +9,7 @@ export default function Settings() {
   const [newCode, setNewCode] = useState('');
   const [newDesc, setNewDesc] = useState('');
   const [scanning, setScanning] = useState(false);
+  const [scanProgress, setScanProgress] = useState({ total: 0, processed: 0 });
   const [oldPw, setOldPw] = useState('');
   const [newPw, setNewPw] = useState('');
 
@@ -46,8 +47,32 @@ export default function Settings() {
 
   const triggerScan = async () => {
     setScanning(true);
-    await mediaAPI.scan();
-    setTimeout(() => { setScanning(false); fetchData(); }, 3000);
+    setScanProgress({ total: 0, processed: 0 });
+
+    try {
+      await mediaAPI.scan();
+    } catch {
+      // scan request may fail, still start polling
+    }
+
+    // Poll progress every second
+    const pollTimer = setInterval(async () => {
+      try {
+        const res = await mediaAPI.scanProgress();
+        const { status, total, processed } = res.data;
+        setScanProgress({ total, processed });
+
+        if (status === 'complete' || status === 'idle' || status === 'error') {
+          clearInterval(pollTimer);
+          setScanning(false);
+          fetchData();
+        }
+      } catch {
+        clearInterval(pollTimer);
+        setScanning(false);
+        fetchData();
+      }
+    }, 1000);
   };
 
   const addInviteCode = async () => {
@@ -102,8 +127,23 @@ export default function Settings() {
           </div>
         ))}
         <button className="btn-sm btn-primary" onClick={triggerScan} disabled={scanning}>
-          {scanning ? '扫描中...' : '🔄 手动扫描'}
+          {scanning ? '🔄 扫描中...' : '🔄 手动扫描'}
         </button>
+
+        {scanning && scanProgress.total > 0 && (
+          <div className="scan-progress">
+            <div className="progress-bar">
+              <div
+                className="progress-fill"
+                style={{ width: `${Math.round((scanProgress.processed / scanProgress.total) * 100)}%` }}
+              />
+            </div>
+            <span className="progress-text">
+              {scanProgress.processed} / {scanProgress.total}
+              {' '}({Math.round((scanProgress.processed / scanProgress.total) * 100)}%)
+            </span>
+          </div>
+        )}
       </section>
 
       {/* Invite Codes */}

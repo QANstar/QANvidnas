@@ -21,6 +21,7 @@ public class ScannerService
     private readonly IServiceScopeFactory _scopeFactory;
     private ScanProgress _progress = new();
     private readonly object _lock = new();
+    private bool _isScanning;
 
     public ScannerService(IServiceScopeFactory scopeFactory)
     {
@@ -38,87 +39,103 @@ public class ScannerService
         };
     }
 
+    public bool TryStartScan()
+    {
+        lock (_lock)
+        {
+            if (_isScanning) return false;
+            _isScanning = true;
+            _progress = new ScanProgress { Status = "scanning" };
+            return true;
+        }
+    }
+
     public async Task FullScanAsync()
     {
-        lock (_lock) _progress = new ScanProgress { Status = "scanning" };
-
-        using var scope = _scopeFactory.CreateScope();
-        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        var thumbnailer = scope.ServiceProvider.GetRequiredService<ThumbnailService>();
-
-        var folders = await db.ScanFolders.ToListAsync();
-
-        // Count total files
-        int total = 0;
-        foreach (var folder in folders)
+        try
         {
-            if (Directory.Exists(folder.Path))
+            using var scope = _scopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            var thumbnailer = scope.ServiceProvider.GetRequiredService<ThumbnailService>();
+
+            var folders = await db.ScanFolders.ToListAsync();
+
+            // Count total files
+            int total = 0;
+            foreach (var folder in folders)
             {
-                total += Directory.GetFiles(folder.Path, "*.*", SearchOption.AllDirectories)
-                    .Count(f => SupportedExtensions.ContainsKey(Path.GetExtension(f)));
-            }
-        }
-
-        lock (_lock) _progress.Total = total;
-
-        int processed = 0;
-        foreach (var folder in folders)
-        {
-            if (!Directory.Exists(folder.Path)) continue;
-
-            foreach (var filePath in Directory.GetFiles(folder.Path, "*.*", SearchOption.AllDirectories))
-            {
-                var ext = Path.GetExtension(filePath);
-                if (!SupportedExtensions.TryGetValue(ext, out var mediaType)) continue;
-
-                // Check existing
-                var exists = await db.Media.AnyAsync(m => m.Path == filePath && !m.Deleted);
-                if (exists) { processed++; continue; }
-
-                var meta = ExtractMetadata(filePath, mediaType);
-                var fileName = Path.GetFileNameWithoutExtension(filePath);
-                var info = new FileInfo(filePath);
-                var now = DateTime.UtcNow;
-
-                var media = new Media
+                if (Directory.Exists(folder.Path))
                 {
-                    Title = fileName,
-                    Type = mediaType,
-                    Path = filePath,
-                    Duration = meta.Duration,
-                    Resolution = meta.Resolution,
-                    Codec = meta.Codec,
-                    Bitrate = meta.Bitrate,
-                    FileSize = info.Length,
-                    CreatedAt = now,
-                    UpdatedAt = now,
-                };
-
-                db.Media.Add(media);
-                await db.SaveChangesAsync();
-
-                // Generate thumbnails async
-                if (mediaType == "video")
-                {
-                    _ = thumbnailer.GenerateCoverAsync(media.Id, filePath, meta.Duration);
-                    _ = thumbnailer.GenerateSpriteAsync(media.Id, filePath, meta.Duration);
-                }
-
-                processed++;
-                lock (_lock)
-                {
-                    _progress.Processed = processed;
-                    _progress.Status = "scanning";
+                    total += Directory.GetFiles(folder.Path, "*.*", SearchOption.AllDirectories)
+                        .Count(f => SupportedExtensions.ContainsKey(Path.GetExtension(f)));
                 }
             }
 
-            folder.LastScanAt = DateTime.UtcNow;
-            folder.Status = "idle";
+            lock (_lock) _progress.Total = total;
+
+            int processed = 0;
+            foreach (var folder in folders)
+            {
+                if (!Directory.Exists(folder.Path)) continue;
+
+                foreach (var filePath in Directory.GetFiles(folder.Path, "*.*", SearchOption.AllDirectories))
+                {
+                    var ext = Path.GetExtension(filePath);
+                    if (!SupportedExtensions.TryGetValue(ext, out var mediaType)) continue;
+
+                    // Check existing
+                    var exists = await db.Media.AnyAsync(m => m.Path == filePath && !m.Deleted);
+                    if (exists) { processed++; continue; }
+
+                    var meta = ExtractMetadata(filePath, mediaType);
+                    var fileName = Path.GetFileNameWithoutExtension(filePath);
+                    var info = new FileInfo(filePath);
+                    var now = DateTime.UtcNow;
+
+                    var media = new Media
+                    {
+                        Title = fileName,
+                        Type = mediaType,
+                        Path = filePath,
+                        Duration = meta.Duration,
+                        Resolution = meta.Resolution,
+                        Codec = meta.Codec,
+                        Bitrate = meta.Bitrate,
+                        FileSize = info.Length,
+                        CreatedAt = now,
+                        UpdatedAt = now,
+                    };
+
+                    db.Media.Add(media);
+                    await db.SaveChangesAsync();
+
+                    // Generate thumbnails async
+                    if (mediaType == "video")
+                    {
+                        _ = thumbnailer.GenerateCoverAsync(media.Id, filePath, meta.Duration);
+                        _ = thumbnailer.GenerateSpriteAsync(media.Id, filePath, meta.Duration);
+                    }
+
+                    processed++;
+                    lock (_lock)
+                    {
+                        _progress.Processed = processed;
+                        _progress.Status = "scanning";
+                    }
+                }
+
+                folder.LastScanAt = DateTime.UtcNow;
+                folder.Status = "idle";
+            }
+
+            await db.SaveChangesAsync();
+
+            lock (_lock) _progress.Status = "complete";
         }
-
-        await db.SaveChangesAsync();
-
-        lock (_lock) _progress.Status = "complete";
+        finally
+        {
+            lock (_lock) _isScanning = false;
+        }
     }
 
     private static MediaMeta ExtractMetadata(string path, string mediaType)
