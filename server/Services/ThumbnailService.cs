@@ -29,12 +29,32 @@ public class ThumbnailService
 
         var outputPath = Path.Combine(coverDir, $"{mediaId}_cover.jpg");
 
-        // Try the middle of the video first, fall back to 30% if that fails
-        var position = duration * 0.5;
-        if (!await ExtractFrameAsync(filePath, outputPath, position, 480))
+        // Try multiple positions to avoid black frames (intros, scene transitions)
+        var positions = duration switch
         {
-            if (duration >= 10)
-                await ExtractFrameAsync(filePath, outputPath, duration * 0.3, 480);
+            < 10   => new[] { duration * 0.5 },
+            < 60   => new[] { duration * 0.35, duration * 0.55, duration * 0.75 },
+            < 600  => new[] { duration * 0.3, duration * 0.5, duration * 0.7 },
+            _      => new[] { duration * 0.25, duration * 0.5, duration * 0.75 },
+        };
+
+        foreach (var pos in positions)
+        {
+            if (await ExtractFrameAsync(filePath, outputPath, pos, 480))
+            {
+                // Check if the frame is likely a black/dark frame (very small file size)
+                try
+                {
+                    var info = new FileInfo(outputPath);
+                    if (info.Length < 4096) // < 4KB is suspiciously small, likely black/dark
+                    {
+                        File.Delete(outputPath);
+                        continue; // try next position
+                    }
+                }
+                catch { continue; }
+                break; // got a good frame
+            }
         }
 
         using var scope = _scopeFactory.CreateScope();
@@ -126,12 +146,16 @@ public class ThumbnailService
     {
         try
         {
+            // Fast keyframe seek to ~10s before target, then accurate seek from there
+            var preSeek = Math.Max(0, timestamp - 10);
+            var accurateSeek = timestamp - preSeek;
+
             using var process = new Process
             {
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "ffmpeg",
-                    Arguments = $"-y -ss {timestamp:F2} -i \"{input}\" -vframes 1 -vf scale={width}:-1 -q:v 3 \"{output}\"",
+                    Arguments = $"-y -ss {preSeek:F2} -i \"{input}\" -ss {accurateSeek:F2} -vframes 1 -vf scale={width}:-1 -q:v 3 \"{output}\"",
                     RedirectStandardError = true,
                     UseShellExecute = false,
                     CreateNoWindow = true,
