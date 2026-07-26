@@ -25,7 +25,7 @@
 
 ### Requirement: 全文搜索
 
-系统 SHALL 支持通过 SQLite FTS5 对媒体的名称、描述、标签名称进行全文搜索。搜索结果按相关度排序。
+系统 SHALL 支持通过 EF Core LINQ Contains 对媒体的名称、描述、标签名称进行全文搜索。搜索结果按创建时间排序。
 
 #### Scenario: 搜索匹配名称
 
@@ -50,7 +50,7 @@
 #### Scenario: 搜索支持中文分词
 
 - **WHEN** 用户输入中文关键词
-- **THEN** 系统通过 FTS5 内置的分词器正确匹配中文内容
+- **THEN** 系统通过 Contains 模糊匹配正确匹配中文内容
 
 ### Requirement: 组合筛选与搜索
 

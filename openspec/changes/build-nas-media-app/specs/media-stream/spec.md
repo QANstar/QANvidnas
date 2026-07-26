@@ -1,12 +1,12 @@
 # media-stream
 
-媒体流服务。通过 Go 后端代理所有音视频文件访问，支持 HTTP Range 请求，所有请求需认证。
+媒体流服务。通过 .NET 后端代理所有音视频文件访问，支持 HTTP Range 请求，所有请求需认证。
 
 ## ADDED Requirements
 
 ### Requirement: HTTP Range 流传输
 
-音视频文件 SHALL 通过 Go HTTP Handler 代理传输，完整支持 HTTP Range 请求（RFC 7233），实现客户端 seek 操作。
+音视频文件 SHALL 通过 .NET Endpoint Handler 代理传输，完整支持 HTTP Range 请求（RFC 7233），实现客户端 seek 操作。
 
 #### Scenario: 请求视频流（带 Range 头）
 

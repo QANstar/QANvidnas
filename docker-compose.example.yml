@@ -12,7 +12,7 @@ services:
       - "6666:6666"
     volumes:
       - ./config.yaml:/app/config.yaml:ro
-      - ./data:/app/data
+      - ./storage:/app/data
       - /your/nas/media/path:/media    # ← 改成你的 NAS 媒体文件夹路径
     environment:
       - TZ=Asia/Shanghai
