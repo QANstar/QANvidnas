@@ -19,7 +19,7 @@ export default function Playlists() {
   const [newName, setNewName] = useState('');
   const [newPath, setNewPath] = useState('');
   const navigate = useNavigate();
-  const { setCurrentMedia, setPlaylist } = useStore();
+  const { setCurrentMedia, setPlaylist, setPlaylistItems } = useStore();
 
   const fetchPlaylists = async () => {
     try {
@@ -58,8 +58,9 @@ export default function Playlists() {
       const res = await playlistAPI.get(playlist.id);
       const items = res.data.items;
       if (items.length > 0) {
+        const mediaItems = items.map((item: { media: { id: number; title: string; type: string; coverPath?: string } }) => item.media);
         setPlaylist(playlist.id);
-        setCurrentMedia(items[0].media);
+        setPlaylistItems(mediaItems, 0);
         navigate('/player');
       }
     } catch (err) {

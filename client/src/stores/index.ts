@@ -6,9 +6,18 @@ interface User {
   isAdmin: boolean;
 }
 
+interface PlaylistMedia {
+  id: number;
+  title: string;
+  type: string;
+  coverPath?: string;
+}
+
 interface PlayerState {
-  currentMedia: { id: number; title: string; type: string; coverPath?: string } | null;
+  currentMedia: PlaylistMedia | null;
   playlistId: number | null;
+  playlistItems: PlaylistMedia[];
+  currentIndex: number;
   playMode: 'sequential' | 'loop' | 'random' | 'single-loop';
   isPlaying: boolean;
   currentTime: number;
@@ -37,6 +46,9 @@ interface AppState {
   // Player actions
   setCurrentMedia: (media: PlayerState['currentMedia']) => void;
   setPlaylist: (playlistId: number | null) => void;
+  setPlaylistItems: (items: PlaylistMedia[], startIndex?: number) => void;
+  playNext: () => PlaylistMedia | null;
+  playPrevious: () => PlaylistMedia | null;
   setPlayMode: (mode: PlayerState['playMode']) => void;
   setPlaying: (playing: boolean) => void;
   setCurrentTime: (time: number) => void;
@@ -59,6 +71,8 @@ export const useStore = create<AppState>((set) => ({
   player: {
     currentMedia: null,
     playlistId: null,
+    playlistItems: [],
+    currentIndex: -1,
     playMode: 'sequential',
     isPlaying: false,
     currentTime: 0,
@@ -85,6 +99,74 @@ export const useStore = create<AppState>((set) => ({
 
   setCurrentMedia: (media) => set((s) => ({ player: { ...s.player, currentMedia: media } })),
   setPlaylist: (id) => set((s) => ({ player: { ...s.player, playlistId: id } })),
+  setPlaylistItems: (items, startIndex = 0) => set((s) => ({
+    player: { ...s.player, playlistItems: items, currentIndex: startIndex },
+  })),
+  playNext: () => {
+    let nextMedia: PlaylistMedia | null = null;
+    set((s) => {
+      const { playlistItems, currentIndex, playMode } = s.player;
+      if (playlistItems.length === 0) return s;
+      let nextIndex: number;
+      if (playMode === 'random') {
+        nextIndex = Math.floor(Math.random() * playlistItems.length);
+      } else if (playMode === 'single-loop') {
+        nextIndex = currentIndex;
+      } else if (playMode === 'loop') {
+        nextIndex = (currentIndex + 1) % playlistItems.length;
+      } else {
+        // sequential
+        nextIndex = currentIndex + 1;
+        if (nextIndex >= playlistItems.length) return s; // end of playlist
+      }
+      nextMedia = playlistItems[nextIndex];
+      return {
+        player: {
+          ...s.player,
+          currentMedia: nextMedia,
+          currentIndex: nextIndex,
+          isPlaying: true,
+          currentTime: 0,
+          duration: 0,
+        },
+      };
+    });
+    return nextMedia;
+  },
+  playPrevious: () => {
+    let prevMedia: PlaylistMedia | null = null;
+    set((s) => {
+      const { playlistItems, currentIndex, playMode } = s.player;
+      if (playlistItems.length === 0) return s;
+      let prevIndex: number;
+      if (playMode === 'random') {
+        prevIndex = Math.floor(Math.random() * playlistItems.length);
+      } else if (playMode === 'single-loop') {
+        prevIndex = currentIndex;
+      } else {
+        prevIndex = currentIndex - 1;
+        if (prevIndex < 0) {
+          if (playMode === 'loop') {
+            prevIndex = playlistItems.length - 1;
+          } else {
+            return s; // beginning of playlist
+          }
+        }
+      }
+      prevMedia = playlistItems[prevIndex];
+      return {
+        player: {
+          ...s.player,
+          currentMedia: prevMedia,
+          currentIndex: prevIndex,
+          isPlaying: true,
+          currentTime: 0,
+          duration: 0,
+        },
+      };
+    });
+    return prevMedia;
+  },
   setPlayMode: (mode) => set((s) => ({ player: { ...s.player, playMode: mode } })),
   setPlaying: (playing) => set((s) => ({ player: { ...s.player, isPlaying: playing } })),
   setCurrentTime: (time) => set((s) => ({ player: { ...s.player, currentTime: time } })),
