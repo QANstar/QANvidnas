@@ -7,7 +7,8 @@
 }
 
 .player-container {
-  background: var(--bg-secondary);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
   overflow: hidden;
 }
@@ -27,10 +28,11 @@
   border-radius: var(--border-radius);
   overflow: hidden;
   margin-bottom: var(--space-lg);
-  background: var(--accent-gradient);
+  background: var(--blue-bg);
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 1px solid var(--border-color);
 }
 
 .audio-cover img {
@@ -44,11 +46,13 @@
 .audio-title {
   font-size: var(--font-size-xl);
   text-align: center;
+  color: var(--text-primary);
 }
 
 .player-controls {
   padding: var(--space-md) var(--space-lg);
-  background: var(--bg-card);
+  background: var(--bg-primary);
+  border-top: 1px solid var(--border-color);
 }
 
 .seek-bar-wrapper { margin-bottom: var(--space-md); }
@@ -61,6 +65,7 @@
   border-radius: 3px;
   cursor: pointer;
   outline: none;
+  background: var(--border-color);
 }
 
 .seek-bar::-webkit-slider-thumb {
@@ -68,9 +73,9 @@
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: var(--pink);
+  background: var(--blue);
   cursor: pointer;
-  box-shadow: 0 0 6px rgba(255, 107, 157, 0.5);
+  box-shadow: 0 0 6px rgba(59, 130, 246, 0.3);
 }
 
 .time-display {
@@ -94,18 +99,28 @@
   height: 48px;
   border-radius: 50%;
   border: none;
-  background: var(--accent-gradient);
+  background: var(--blue);
   color: white;
   font-size: 1.2rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: opacity var(--transition-fast);
+  transition: background var(--transition-fast);
 }
 
-.ctrl-btn:hover { opacity: 0.85; }
-.ctrl-sm { width: 36px; height: 36px; font-size: 0.9rem; }
+.ctrl-btn:hover { background: var(--blue-dark); }
+.ctrl-sm {
+  width: 36px;
+  height: 36px;
+  font-size: 0.9rem;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+}
+.ctrl-sm:hover {
+  background: var(--bg-hover);
+  color: var(--blue);
+}
 
 .volume-control {
   display: flex;
@@ -129,5 +144,5 @@
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: var(--blue-light);
+  background: var(--blue);
 }

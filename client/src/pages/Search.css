@@ -19,7 +19,7 @@
 
 .search-input:focus {
   border-color: var(--blue);
-  box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.15);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
 }
 
 .search-icon {
@@ -44,6 +44,7 @@
   font-size: 0.8rem;
   cursor: pointer;
   transition: all var(--transition-fast);
+  font-weight: 500;
 }
 
 .tag-filter-btn:hover {
@@ -68,13 +69,15 @@
   padding: var(--space-md);
   background: var(--bg-card);
   border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
   text-decoration: none;
   color: inherit;
-  transition: background var(--transition-fast);
+  transition: all var(--transition-fast);
 }
 
 .search-result-item:hover {
-  background: var(--bg-hover);
+  border-color: var(--blue);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.08);
 }
 
 .sr-cover {
@@ -94,7 +97,11 @@
 
 .sr-info { flex: 1; min-width: 0; }
 
-.sr-title { font-size: var(--font-size-base); margin-bottom: 4px; }
+.sr-title {
+  font-size: var(--font-size-base);
+  margin-bottom: 4px;
+  color: var(--text-primary);
+}
 
 .sr-desc {
   font-size: var(--font-size-sm);

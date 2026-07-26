@@ -1,10 +1,16 @@
 .upload-page { max-width: 700px; margin: 0 auto; }
 
-.upload-page h2 { margin-bottom: var(--space-lg); }
+.upload-page h2 { margin-bottom: var(--space-lg); color: var(--text-primary); }
 
 .upload-form { display: flex; flex-direction: column; gap: var(--space-md); }
 
-.form-group label { display: block; margin-bottom: 6px; color: var(--text-secondary); font-size: var(--font-size-sm); }
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+}
 
 .drop-zone {
   border: 2px dashed var(--border-color);
@@ -15,11 +21,12 @@
   cursor: pointer;
   transition: all var(--transition-fast);
   position: relative;
+  background: var(--bg-card);
 }
 
 .drop-zone:hover {
   border-color: var(--blue);
-  background: rgba(108, 92, 231, 0.05);
+  background: var(--blue-pale);
 }
 
 .drop-icon { font-size: 2.5rem; margin-bottom: var(--space-sm); }
@@ -34,17 +41,23 @@
 
 .file-list {
   background: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
   padding: var(--space-md);
 }
 
-.file-count { font-size: var(--font-size-sm); margin-bottom: var(--space-sm); }
+.file-count {
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--space-sm);
+  color: var(--text-secondary);
+}
 
 .file-item {
   display: flex;
   justify-content: space-between;
   padding: 4px 0;
   font-size: var(--font-size-sm);
+  color: var(--text-primary);
 }
 
 .file-size { color: var(--text-muted); }
@@ -58,14 +71,14 @@
 .progress-bar {
   flex: 1;
   height: 8px;
-  background: var(--bg-card);
+  background: var(--border-color);
   border-radius: 4px;
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
-  background: var(--accent-gradient);
+  background: var(--blue);
   border-radius: 4px;
   transition: width 0.3s ease;
 }
@@ -74,21 +87,28 @@
 
 .upload-message {
   font-size: var(--font-size-sm);
-  color: var(--blue-light);
+  color: var(--blue);
 }
 
-.upload-message.error { color: var(--pink); }
+.upload-message.error { color: #EF4444; }
 
 .btn-upload {
   padding: 12px 24px;
-  background: var(--accent-gradient);
+  background: var(--blue);
   border: none;
   border-radius: var(--border-radius);
   color: white;
   font-size: var(--font-size-base);
   font-weight: 600;
   cursor: pointer;
-  transition: opacity var(--transition-fast);
+  transition: background var(--transition-fast);
 }
 
-.btn-upload:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-upload:hover:not(:disabled) {
+  background: var(--blue-dark);
+}
+
+.btn-upload:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

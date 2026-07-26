@@ -1,15 +1,20 @@
 .settings-page { max-width: 800px; margin: 0 auto; }
 
-.settings-page h2 { margin-bottom: var(--space-xl); }
+.settings-page h2 { margin-bottom: var(--space-xl); color: var(--text-primary); }
 
 .settings-section {
   background: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
   padding: var(--space-lg);
   margin-bottom: var(--space-lg);
 }
 
-.settings-section h3 { margin-bottom: var(--space-md); font-size: var(--font-size-lg); }
+.settings-section h3 {
+  margin-bottom: var(--space-md);
+  font-size: var(--font-size-lg);
+  color: var(--text-primary);
+}
 
 .add-row {
   display: flex;
@@ -34,10 +39,11 @@
 
 .invite-code {
   font-family: monospace;
-  background: var(--bg-secondary);
+  background: var(--blue-pale);
   padding: 2px 8px;
   border-radius: 4px;
-  color: var(--blue-light);
+  color: var(--blue);
+  font-weight: 500;
 }
 
 .code-desc {
