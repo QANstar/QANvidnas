@@ -1,10 +1,12 @@
-# 复制此文件为 docker-compose.yml 并修改媒体路径
+# 复制此文件为 docker-compose.yml 并修改配置
 # docker-compose.yml 不会被提交到 Git
 
 services:
-  qanvidnas:
-    build: .
-    container_name: qanvidnas
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: qanvidnas-backend
     restart: unless-stopped
     ports:
       - "6666:6666"
@@ -12,5 +14,18 @@ services:
       - ./config.yaml:/app/config.yaml:ro
       - ./data:/app/data
       - /your/nas/media/path:/media    # ← 改成你的 NAS 媒体文件夹路径
+    environment:
+      - TZ=Asia/Shanghai
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: qanvidnas-frontend
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
     environment:
       - TZ=Asia/Shanghai

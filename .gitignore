@@ -1,16 +1,10 @@
-# Config
+# Config (do not commit)
 config.yaml
 docker-compose.yml
-
-# Go
-server/qanvidnas
-server/internal/router/web/dist/
 
 # Node
 node_modules/
 client/dist/
-client/android/app/build/
-client/android/.gradle/
 
 # IDE
 .vscode/
