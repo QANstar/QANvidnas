@@ -20,7 +20,7 @@ COPY server/ ./
 COPY --from=client-builder /client/dist ./internal/router/web/dist/
 
 RUN go mod tidy
-RUN CGO_ENABLED=1 go build -tags "sqlite_fts5" -o /qanvidnas .
+RUN CGO_ENABLED=1 go build -tags "sqlite_fts5" -ldflags '-extldflags "-static"' -o /qanvidnas .
 
 # Stage 3: Final image
 FROM alpine:3.20
