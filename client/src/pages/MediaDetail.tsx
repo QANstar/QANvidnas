@@ -62,7 +62,7 @@ export default function MediaDetail() {
       await mediaAPI.update(media.id, {
         title,
         description,
-        tag_ids: media.tags.map((t) => t.id),
+        tagIds: media.tags.map((t) => t.id),
       });
       setEditing(false);
       setMedia({ ...media, title, description, tags: media.tags });
@@ -83,7 +83,7 @@ export default function MediaDetail() {
       newTags = [...media.tags.map((t) => t.id), tagId];
       if (tag) setMedia({ ...media, tags: [...media.tags, tag] });
     }
-    await mediaAPI.update(media.id, { tag_ids: newTags });
+    await mediaAPI.update(media.id, { tagIds: newTags });
   };
 
   const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -39,20 +39,20 @@ export const authAPI = {
   login: (username: string, password: string) =>
     api.post('/auth/login', { username, password }),
   register: (inviteCode: string, username: string, password: string) =>
-    api.post('/auth/register', { invite_code: inviteCode, username, password }),
+    api.post('/auth/register', { inviteCode, username, password }),
   me: () => api.get('/auth/me'),
   generateDeviceCode: () => api.get('/auth/device-code'),
   pollDeviceCode: (code: string) => api.get(`/auth/device-code/poll?code=${code}`),
   authorizeDeviceCode: (code: string) => api.post('/auth/device-code/authorize', { code }),
   changePassword: (oldPassword: string, newPassword: string) =>
-    api.post('/auth/change-password', { old_password: oldPassword, new_password: newPassword }),
+    api.post('/auth/change-password', { oldPassword, newPassword }),
 };
 
 // Media API
 export const mediaAPI = {
   list: (params?: Record<string, string>) => api.get('/media', { params }),
   get: (id: number) => api.get(`/media/${id}`),
-  update: (id: number, data: { title?: string; description?: string; tag_ids?: number[] }) =>
+  update: (id: number, data: { title?: string; description?: string; tagIds?: number[] }) =>
     api.put(`/media/${id}`, data),
   uploadCover: (id: number, file: File) => {
     const form = new FormData();
@@ -79,12 +79,12 @@ export const playlistAPI = {
   list: () => api.get('/playlists'),
   get: (id: number) => api.get(`/playlists/${id}`),
   create: (name: string, folderPath: string) =>
-    api.post('/playlists', { name, folder_path: folderPath }),
+    api.post('/playlists', { name, folderPath }),
   update: (id: number, playMode: string) =>
-    api.put(`/playlists/${id}`, { play_mode: playMode }),
+    api.put(`/playlists/${id}`, { playMode }),
   delete: (id: number) => api.delete(`/playlists/${id}`),
   playNow: (folderPath: string) =>
-    api.post('/playlists/play-now', { folder_path: folderPath }),
+    api.post('/playlists/play-now', { folderPath }),
 };
 
 // Upload API
@@ -107,7 +107,7 @@ export const uploadAPI = {
 // Admin API
 export const adminAPI = {
   getInviteCodes: () => api.get('/admin/invite-codes'),
-  createInviteCode: (data: { code: string; description?: string; max_uses?: number; expires_at?: string }) =>
+  createInviteCode: (data: { code: string; description?: string; maxUses?: number; expiresAt?: string }) =>
     api.post('/admin/invite-codes', data),
   deleteInviteCode: (code: string) => api.delete(`/admin/invite-codes/${code}`),
   getScanFolders: () => api.get('/admin/scan-folders'),

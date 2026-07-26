@@ -7,9 +7,9 @@ import './Playlists.css';
 interface PlaylistItem {
   id: number;
   name: string;
-  folder_path: string;
-  play_mode: string;
-  created_at: string;
+  folderPath: string;
+  playMode: string;
+  createdAt: string;
   item_count?: number;
 }
 
@@ -119,8 +119,8 @@ export default function Playlists() {
             <div key={pl.id} className="playlist-card">
               <div className="pl-info">
                 <h3>{pl.name}</h3>
-                <p className="pl-path">{pl.folder_path}</p>
-                <span className="pl-mode">{playModeLabels[pl.play_mode] || pl.play_mode}</span>
+                <p className="pl-path">{pl.folderPath}</p>
+                <span className="pl-mode">{playModeLabels[pl.playMode] || pl.playMode}</span>
               </div>
               <div className="pl-actions">
                 <button className="btn-sm btn-primary" onClick={() => handlePlay(pl)}>▶ 播放</button>

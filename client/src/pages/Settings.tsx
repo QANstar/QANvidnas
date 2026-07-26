@@ -4,7 +4,7 @@ import './Settings.css';
 
 export default function Settings() {
   const [scanFolders, setScanFolders] = useState<{ id: number; path: string; status: string }[]>([]);
-  const [inviteCodes, setInviteCodes] = useState<{ code: string; description: string; max_uses: number; used: number }[]>([]);
+  const [inviteCodes, setInviteCodes] = useState<{ code: string; description: string; maxUses: number; used: number }[]>([]);
   const [newPath, setNewPath] = useState('');
   const [newCode, setNewCode] = useState('');
   const [newDesc, setNewDesc] = useState('');
@@ -53,7 +53,7 @@ export default function Settings() {
   const addInviteCode = async () => {
     if (!newCode) return;
     try {
-      await adminAPI.createInviteCode({ code: newCode, description: newDesc, max_uses: 5 });
+      await adminAPI.createInviteCode({ code: newCode, description: newDesc, maxUses: 5 });
       setNewCode('');
       setNewDesc('');
       fetchData();
@@ -130,7 +130,7 @@ export default function Settings() {
               <code className="invite-code">{c.code}</code>
               {c.description && <span className="code-desc">{c.description}</span>}
             </div>
-            <span className="code-usage">{c.used}/{c.max_uses || '∞'}</span>
+            <span className="code-usage">{c.used}/{c.maxUses || '∞'}</span>
             <button className="btn-sm btn-secondary" onClick={() => deleteCode(c.code)}>删除</button>
           </div>
         ))}
