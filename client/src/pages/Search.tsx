@@ -16,7 +16,7 @@ interface SearchItem {
   description: string;
   type: string;
   duration: number;
-  cover_path: string;
+  coverPath: string;
 }
 
 export default function Search() {
@@ -112,7 +112,7 @@ export default function Search() {
             {results.map((item) => (
               <Link to={`/media/${item.id}`} key={item.id} className="search-result-item">
                 <div className="sr-cover">
-                  {item.cover_path ? (
+                  {item.coverPath ? (
                     <img src={`/api/stream/cover/${item.id}`} alt={item.title} />
                   ) : (
                     <div className="card-placeholder">{item.type === 'audio' ? '🎵' : '🎬'}</div>

@@ -71,7 +71,7 @@ export default function Player() {
         ) : (
           <div className="audio-visual">
             <div className="audio-cover">
-              {currentMedia.cover_path ? (
+              {currentMedia.coverPath ? (
                 <img src={`/api/stream/cover/${currentMedia.id}`} alt={currentMedia.title} />
               ) : (
                 <div className="audio-placeholder">🎵</div>

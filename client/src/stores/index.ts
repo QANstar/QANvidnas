@@ -3,11 +3,11 @@ import { create } from 'zustand';
 interface User {
   id: number;
   username: string;
-  is_admin: boolean;
+  isAdmin: boolean;
 }
 
 interface PlayerState {
-  currentMedia: { id: number; title: string; type: string; cover_path?: string } | null;
+  currentMedia: { id: number; title: string; type: string; coverPath?: string } | null;
   playlistId: number | null;
   playMode: 'sequential' | 'loop' | 'random' | 'single-loop';
   isPlaying: boolean;

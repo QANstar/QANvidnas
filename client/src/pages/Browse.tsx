@@ -9,10 +9,10 @@ interface MediaItem {
   title: string;
   type: string;
   duration: number;
-  cover_path: string;
+  coverPath: string;
   resolution: string;
   tags: { id: number; name: string; color: string }[];
-  created_at: string;
+  createdAt: string;
 }
 
 export default function Browse() {
@@ -28,7 +28,7 @@ export default function Browse() {
     try {
       const params: Record<string, string> = {
         page: String(page),
-        page_size: '50',
+        pageSize: '50',
         sort: filter.sortBy,
         order: filter.order,
       };
@@ -36,7 +36,7 @@ export default function Browse() {
 
       const res = await mediaAPI.list(params);
       setItems(res.data.items);
-      setTotalPages(res.data.total_pages);
+      setTotalPages(res.data.totalPages);
     } catch (err) {
       console.error('Failed to load media:', err);
     } finally {
@@ -75,7 +75,7 @@ export default function Browse() {
                 className="media-card focusable"
               >
                 <div className="card-cover">
-                  {item.cover_path ? (
+                  {item.coverPath ? (
                     <img
                       src={`/api/stream/cover/${item.id}`}
                       alt={item.title}

@@ -10,7 +10,6 @@ interface PlaylistItem {
   folderPath: string;
   playMode: string;
   createdAt: string;
-  item_count?: number;
 }
 
 export default function Playlists() {

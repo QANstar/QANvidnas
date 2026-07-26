@@ -17,7 +17,7 @@ export default function Setup() {
   useEffect(() => {
     if (token) { navigate('/'); return; }
     authAPI.checkSetup()
-      .then((res) => setNeedsSetup(res.data.setup_required))
+      .then((res) => setNeedsSetup(res.data.setupRequired))
       .catch(() => navigate('/login'));
   }, [token, navigate]);
 
@@ -38,7 +38,7 @@ export default function Setup() {
     setLoading(true);
     try {
       const res = await authAPI.setup(username, password);
-      setAuth({ id: 0, username, is_admin: true }, res.data.token);
+      setAuth({ id: 0, username, isAdmin: true }, res.data.token);
       navigate('/');
     } catch (err: unknown) {
       const axiosErr = err as { response?: { data?: { error?: string } } };

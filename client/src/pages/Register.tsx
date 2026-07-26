@@ -21,7 +21,7 @@ export default function Register() {
     setError('');
     try {
       const res = await authAPI.register(inviteCode, username, password);
-      setAuth({ id: 0, username, is_admin: false }, res.data.token);
+      setAuth({ id: 0, username, isAdmin: false }, res.data.token);
       navigate('/');
     } catch (err: unknown) {
       const axiosErr = err as { response?: { data?: { error?: string } } };

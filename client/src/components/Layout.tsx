@@ -36,7 +36,7 @@ export default function Layout() {
             <span className="nav-icon">📤</span>
             <span>上传</span>
           </NavLink>
-          {user?.is_admin && (
+          {user?.isAdmin && (
             <NavLink to="/settings" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
               <span className="nav-icon">⚙️</span>
               <span>设置</span>
@@ -47,7 +47,7 @@ export default function Layout() {
         <div className="nav-footer">
           <div className="user-info">
             <span>{user?.username}</span>
-            {user?.is_admin && <span className="admin-badge">管理员</span>}
+            {user?.isAdmin && <span className="admin-badge">管理员</span>}
           </div>
           <button onClick={handleLogout} className="btn-logout">退出</button>
         </div>

@@ -12,13 +12,13 @@ interface MediaInfo {
   path: string;
   duration: number;
   resolution: string;
-  cover_path: string;
-  file_size: number;
+  coverPath: string;
+  fileSize: number;
   codec: string;
   bitrate: number;
   tags: { id: number; name: string; color: string }[];
-  created_at: string;
-  updated_at: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export default function MediaDetail() {
@@ -51,7 +51,7 @@ export default function MediaDetail() {
 
   const handlePlay = () => {
     if (media) {
-      setCurrentMedia({ id: media.id, title: media.title, type: media.type, cover_path: media.cover_path });
+      setCurrentMedia({ id: media.id, title: media.title, type: media.type, coverPath: media.coverPath });
       navigate('/player');
     }
   };
@@ -121,7 +121,7 @@ export default function MediaDetail() {
     <div className="media-detail">
       <div className="detail-hero">
         <div className="detail-cover">
-          {media.cover_path ? (
+          {media.coverPath ? (
             <img src={`/api/stream/cover/${media.id}`} alt={media.title} />
           ) : (
             <div className="card-placeholder">{media.type === 'audio' ? '🎵' : '🎬'}</div>
@@ -154,7 +154,7 @@ export default function MediaDetail() {
             <span>{media.type === 'video' ? '🎬 视频' : '🎵 音频'}</span>
             <span>{formatDuration(media.duration)}</span>
             {media.resolution && <span>{media.resolution}</span>}
-            <span>{formatSize(media.file_size)}</span>
+            <span>{formatSize(media.fileSize)}</span>
             {media.codec && <span>{media.codec}</span>}
           </div>
 
