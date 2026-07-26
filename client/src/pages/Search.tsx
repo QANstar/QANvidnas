@@ -113,7 +113,7 @@ export default function Search() {
               <Link to={`/media/${item.id}`} key={item.id} className="search-result-item">
                 <div className="sr-cover">
                   {item.coverPath ? (
-                    <img src={`/api/stream/cover/${item.id}`} alt={item.title} />
+                    <img src={`/api/stream/cover/${item.id}?token=${localStorage.getItem('token') || ''}`} alt={item.title} />
                   ) : (
                     <div className="card-placeholder">{item.type === 'audio' ? '🎵' : '🎬'}</div>
                   )}

@@ -77,7 +77,7 @@ export default function Browse() {
                 <div className="card-cover">
                   {item.coverPath ? (
                     <img
-                      src={`/api/stream/cover/${item.id}`}
+                      src={`/api/stream/cover/${item.id}?token=${localStorage.getItem('token') || ''}`}
                       alt={item.title}
                       loading="lazy"
                     />

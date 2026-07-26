@@ -50,7 +50,8 @@ export default function Player() {
   }
 
   const isVideo = currentMedia.type === 'video';
-  const streamUrl = `/api/stream/${isVideo ? 'video' : 'audio'}/${currentMedia.id}`;
+  const token = localStorage.getItem('token') || '';
+  const streamUrl = `/api/stream/${isVideo ? 'video' : 'audio'}/${currentMedia.id}?token=${token}`;
 
   return (
     <div className="player-page">
@@ -72,7 +73,7 @@ export default function Player() {
           <div className="audio-visual">
             <div className="audio-cover">
               {currentMedia.coverPath ? (
-                <img src={`/api/stream/cover/${currentMedia.id}`} alt={currentMedia.title} />
+                <img src={`/api/stream/cover/${currentMedia.id}?token=${token}`} alt={currentMedia.title} />
               ) : (
                 <div className="audio-placeholder">🎵</div>
               )}

@@ -29,6 +29,20 @@ builder.Services.AddAuthentication().AddJwtBearer(options =>
         IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(
             System.Text.Encoding.UTF8.GetBytes(jwtKey))
     };
+
+    // 允许从 query string 读取 token，解决 <img>/<video> 标签无法携带 Authorization 头的问题
+    options.Events = new Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            var token = context.Request.Query["token"].FirstOrDefault();
+            if (!string.IsNullOrEmpty(token))
+            {
+                context.Token = token;
+            }
+            return Task.CompletedTask;
+        }
+    };
 });
 builder.Services.AddAuthorization();
 

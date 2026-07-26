@@ -122,7 +122,7 @@ export default function MediaDetail() {
       <div className="detail-hero">
         <div className="detail-cover">
           {media.coverPath ? (
-            <img src={`/api/stream/cover/${media.id}`} alt={media.title} />
+            <img src={`/api/stream/cover/${media.id}?token=${localStorage.getItem('token') || ''}`} alt={media.title} />
           ) : (
             <div className="card-placeholder">{media.type === 'audio' ? '🎵' : '🎬'}</div>
           )}
