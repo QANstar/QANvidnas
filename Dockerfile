@@ -7,38 +7,33 @@ COPY client/ ./
 RUN npm run build
 
 # Stage 2: Build Go server with embedded frontend
-FROM golang:1.22-alpine AS server-builder
+FROM golang:1.22-alpine3.20 AS server-builder
 WORKDIR /server
 
-# Install build dependencies
+# Install build dependencies (required for CGO + SQLite)
 RUN apk add --no-cache gcc musl-dev
 
 ENV GOPROXY=https://goproxy.cn,direct
 
-COPY server/go.mod ./
+COPY server/go.mod server/go.sum ./
+RUN go mod download
+
 COPY server/ ./
 COPY --from=client-builder /client/dist ./internal/router/web/dist/
 
-RUN go mod tidy
-RUN CGO_ENABLED=1 go build -tags "sqlite_fts5" -ldflags '-extldflags "-static"' -o /qanvidnas .
+RUN CGO_ENABLED=1 go build -tags "sqlite_fts5" -o /qanvidnas .
 
-# Stage 3: Final image
-FROM alpine:3.20
+# Stage 3: Production image
+FROM golang:1.22-alpine3.20
 
-# Install runtime dependencies
+# Runtime dependencies
 RUN apk add --no-cache ffmpeg ca-certificates tzdata
 
 WORKDIR /app
-
 COPY --from=server-builder /qanvidnas .
-
-# Create data directory
 RUN mkdir -p /app/data
 
 EXPOSE 6666
-
 ENV TZ=Asia/Shanghai
-
-VOLUME ["/app/data", "/app/config.yaml", "/media"]
 
 CMD ["./qanvidnas"]
