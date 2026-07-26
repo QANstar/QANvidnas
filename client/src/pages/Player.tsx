@@ -14,7 +14,6 @@ export default function Player() {
     setVolume,
     setMuted,
     setPlayMode,
-    setCurrentMedia,
     playNext,
     playPrevious,
   } = useStore();

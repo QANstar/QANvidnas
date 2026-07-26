@@ -19,7 +19,7 @@ export default function Playlists() {
   const [newName, setNewName] = useState('');
   const [newPath, setNewPath] = useState('');
   const navigate = useNavigate();
-  const { setCurrentMedia, setPlaylist, setPlaylistItems } = useStore();
+  const { setPlaylist, setPlaylistItems } = useStore();
 
   const fetchPlaylists = async () => {
     try {
