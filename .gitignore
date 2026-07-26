@@ -1,5 +1,6 @@
 # Config (do not commit)
 config.yaml
+appsettings.json
 docker-compose.yml
 
 # .NET build artifacts

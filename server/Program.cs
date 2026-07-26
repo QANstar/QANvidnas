@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using QANvidnasServer.Data;
+using QANvidnasServer.Models;
 using QANvidnasServer.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -73,6 +74,31 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.EnsureCreated();
+
+    // 从 appsettings.json 同步注册码到数据库
+    var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
+    var inviteCodesSection = config.GetSection("InviteCodes");
+    var inviteCodes = inviteCodesSection.Get<List<InviteCode>>();
+    if (inviteCodes != null)
+    {
+        foreach (var ic in inviteCodes)
+        {
+            if (string.IsNullOrEmpty(ic.Code)) continue;
+
+            var existing = await db.InviteCodes.FindAsync(ic.Code);
+            if (existing == null)
+            {
+                db.InviteCodes.Add(new InviteCode
+                {
+                    Code = ic.Code,
+                    Description = ic.Description ?? "",
+                    MaxUses = ic.MaxUses,
+                    ExpiresAt = ic.ExpiresAt ?? "",
+                });
+            }
+        }
+        await db.SaveChangesAsync();
+    }
 }
 
 // ─── 健康检查 ───
