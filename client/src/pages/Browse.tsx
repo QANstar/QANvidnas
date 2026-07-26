@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { mediaAPI } from '../api/client';
 import { useStore } from '../stores';
+import Pagination from '../components/Pagination';
 import './Browse.css';
 
 interface MediaItem {
@@ -106,25 +107,11 @@ export default function Browse() {
             ))}
           </div>
 
-          {totalPages > 1 && (
-            <div className="pagination">
-              <button
-                className="page-btn"
-                disabled={page <= 1}
-                onClick={() => setPage(page - 1)}
-              >
-                上一页
-              </button>
-              <span className="page-info">{page} / {totalPages}</span>
-              <button
-                className="page-btn"
-                disabled={page >= totalPages}
-                onClick={() => setPage(page + 1)}
-              >
-                下一页
-              </button>
-            </div>
-          )}
+          <Pagination
+            page={page}
+            totalPages={totalPages}
+            onPageChange={setPage}
+          />
         </>
       )}
     </div>
