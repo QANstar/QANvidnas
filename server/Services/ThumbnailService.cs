@@ -28,8 +28,9 @@ public class ThumbnailService
         Directory.CreateDirectory(coverDir);
 
         var outputPath = Path.Combine(coverDir, $"{mediaId}_cover.jpg");
-        var position = duration < 10 ? duration * 0.5 : duration * 0.1;
 
+        // Try the middle of the video first, fall back to 30% if that fails
+        var position = duration * 0.5;
         if (!await ExtractFrameAsync(filePath, outputPath, position, 480))
         {
             if (duration >= 10)
