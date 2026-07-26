@@ -130,6 +130,29 @@ public class ScannerService
 
             await db.SaveChangesAsync();
 
+            // Cleanup: mark DB records whose files no longer exist on disk
+            var allMedia = await db.Media
+                .Where(m => !m.Deleted)
+                .Select(m => new { m.Id, m.Path })
+                .ToListAsync();
+
+            var deletedCount = 0;
+            foreach (var m in allMedia)
+            {
+                if (!File.Exists(m.Path))
+                {
+                    var entity = await db.Media.FindAsync(m.Id);
+                    if (entity != null)
+                    {
+                        entity.Deleted = true;
+                        deletedCount++;
+                    }
+                }
+            }
+
+            if (deletedCount > 0)
+                await db.SaveChangesAsync();
+
             lock (_lock) _progress.Status = "complete";
         }
         finally
