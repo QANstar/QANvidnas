@@ -65,6 +65,8 @@ var app = builder.Build();
 
 // ─── 中间件管道 ───
 app.UseCors();
+app.UseAuthentication();
+app.UseAuthorization();
 
 // 自动创建数据库
 using (var scope = app.Services.CreateScope())

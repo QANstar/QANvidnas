@@ -2,6 +2,10 @@
 config.yaml
 docker-compose.yml
 
+# .NET build artifacts
+bin/
+obj/
+
 # Node
 node_modules/
 client/dist/

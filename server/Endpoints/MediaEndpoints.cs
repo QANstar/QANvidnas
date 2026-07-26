@@ -15,7 +15,7 @@ public static class MediaEndpoints
         var adminGroup = app.MapGroup("/api/admin").RequireAuthorization();
 
         // GET /api/media
-        protectedGroup.MapGet("/", async (
+        protectedGroup.MapGet("", async (
             AppDbContext db, HttpContext http,
             string? type, string? sort, string? order,
             int page = 1, int pageSize = 50) =>

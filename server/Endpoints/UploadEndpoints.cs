@@ -18,7 +18,7 @@ public static class UploadEndpoints
     {
         var group = app.MapGroup("/api/upload").RequireAuthorization();
 
-        group.MapPost("/", async (HttpRequest request, AppDbContext db) =>
+        group.MapPost("", async (HttpRequest request, AppDbContext db) =>
         {
             var form = await request.ReadFormAsync();
             var targetDir = form["target_dir"].FirstOrDefault();

@@ -15,7 +15,7 @@ public static class PlaylistEndpoints
         var group = app.MapGroup("/api/playlists").RequireAuthorization();
 
         // GET /api/playlists
-        group.MapGet("/", async (AppDbContext db, HttpContext http) =>
+        group.MapGet("", async (AppDbContext db, HttpContext http) =>
         {
             var userId = GetUserId(http);
             var playlists = await db.Playlists
@@ -75,7 +75,7 @@ public static class PlaylistEndpoints
         });
 
         // POST /api/playlists
-        group.MapPost("/", async (CreatePlaylistRequest req, AppDbContext db, HttpContext http) =>
+        group.MapPost("", async (CreatePlaylistRequest req, AppDbContext db, HttpContext http) =>
         {
             var userId = GetUserId(http);
 
