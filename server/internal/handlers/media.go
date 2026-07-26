@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
 
@@ -179,7 +180,8 @@ func (h *MediaHandler) Update(c *gin.Context) {
 	}
 
 	// Update FTS index
-	h.updateFTS(id)
+	mediaID, _ := strconv.ParseInt(id, 10, 64)
+	h.updateFTS(mediaID)
 
 	c.JSON(http.StatusOK, gin.H{"message": "更新成功"})
 }
